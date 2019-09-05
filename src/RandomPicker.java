@@ -1,39 +1,53 @@
 import com.google.gson.Gson;
+import com.google.gson.JsonObject;
+import com.google.gson.reflect.TypeToken;
 
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
+import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class RandomPicker {
-    public static List situationDataList;
+    public static List<SituationData> situationDataList;
 
     public static void main(String[] args) {
-        Gson gson = new Gson();
-        SituationData data = new SituationData();
-        situationDataList = new ArrayList<SituationData>();
+        RandomPicker picker = new RandomPicker();
+        situationDataList = new ArrayList<>();
 
-        //stringで一行で読み込んで、それをデシリアライズをかけて使う感じかなぁ。
-        //fromJson(一行, 扱いたいクラス)
-
+        //JSONファイルをよみこんで、リストに登録。
         File jsonFile = new File("./Data.json5");
+        picker.loadJsonFile(jsonFile);
+
+        picker.getContentsAll(situationDataList);
+
+    }
+
+    /**
+     * Jsonファイルを渡して読み込み、シチュエーションリストに格納する。
+     * @param jsonFile
+     */
+    public void loadJsonFile(File jsonFile){
         try {
             BufferedReader reader = new BufferedReader(new FileReader(jsonFile));
-            String line;
-            StringBuilder serializedJson = new StringBuilder();
-            while ((line = reader.readLine()) != null){
-                serializedJson.append(line);
-            }
-            System.out.println(serializedJson);
-
-            data = gson.fromJson(serializedJson.toString(), SituationData.class);
-            System.out.println("who : " + data.getWho() + "where : " + data.getWhere() + "doSomething : " + data.getDoSomething());
-
-
+            SituationData[] data = new Gson().fromJson(reader, SituationData[].class);
+            situationDataList.addAll(Arrays.asList(data));
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
+
+    /**
+     * Jsonに含まれているコンテンツをすべて表示するメソッド
+     * @param list
+     */
+    private void getContentsAll(List<SituationData> list){
+        for (SituationData data : list){
+            System.out.println(data.getWho()+ "は" + data.getWhere()+ "で" +data.getDoSomething());
+        }
+    }
+
 }
