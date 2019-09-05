@@ -83,7 +83,7 @@ public class RandomPicker {
         String doSomething = null;
 
         while (true){
-            selectedNum = random.nextInt(list.size());
+            selectedNum = random.nextInt(list.size() - 1);
             if (who == null){
                 who = list.get(selectedNum).getWho();
                 continue;
