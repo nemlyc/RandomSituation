@@ -16,7 +16,7 @@ public class RandomPicker {
         while (true) {
             try {
                 picker.loadJsonFile(jsonFile);
-                System.out.println("コマンドを選択。\n0.RandomPickUp 1.RegisterWordSet 2.DeleteWordSet \"q\"で修了");
+                System.out.println("\nコマンドを選択。\n0.RandomPickUp 1.RegisterWordSet 2.DeleteWordSet \"q\"で終了");
                 BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
                 String command = reader.readLine();
                 switch (command) {
@@ -32,6 +32,7 @@ public class RandomPicker {
 
                     case "2":
                     case "DeleteWordSet":
+                        picker.deleteCommand();
                         break;
                 }
 
@@ -40,7 +41,7 @@ public class RandomPicker {
                     break;
                 }
                 if (command.equals("show")) {
-                    picker.getContentsAll(situationDataList);
+                    picker.getContentsAll();
                 }
                 if (command.equals("license")) {
 
@@ -51,6 +52,9 @@ public class RandomPicker {
         }
     }
 
+    /**
+     * ワードセットを登録するための情報を入力する。
+     */
     public void registerCommand() {
         try {
             //ワードを格納するリスト
@@ -64,17 +68,20 @@ public class RandomPicker {
                 //動作を入れる。
                 switch (wordSet.size()) {
                     case 0:
-                        System.out.println("「誰が」を入力" + "\n" + "> ");
+                        System.out.println("「誰が」を入力");
+                        System.out.print("> ");
                         input = reader.readLine();
                         wordSet.add(input);
                         break;
                     case 1:
-                        System.out.println("「どこで」を入力" + "\n" + "> ");
+                        System.out.println("「どこで」を入力");
+                        System.out.print("> ");
                         input = reader.readLine();
                         wordSet.add(input);
                         break;
                     case 2:
-                        System.out.println("「何をする」を入力" + "\n" + "> ");
+                        System.out.println("「何をする」を入力");
+                        System.out.print("> ");
                         input = reader.readLine();
                         wordSet.add(input);
                         break;
@@ -87,7 +94,11 @@ public class RandomPicker {
         }
     }
 
-
+    /**
+     * リストを受け取ってSituationDataオブジェクトを作る。
+     * situationDataListに追加し、それをファイルに書き込む。
+     * @param wordSet who, where, doSomethingの3要素を持ったリスト
+     */
     private void registerWordSet(List wordSet) {
         SituationData data = new SituationData();
         Gson gson = new Gson();
@@ -110,11 +121,51 @@ public class RandomPicker {
         }
     }
 
+    /**
+     * ワードセットを削除するための情報を入力する。
+     */
+    public void deleteCommand(){
+        getContentsAll();
+        System.out.println("削除する番号を入力。");
+        System.out.print("> ");
+        try {
+            BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
+            String num_string = reader.readLine();
+            int num = Integer.parseInt(num_string);
+            deleteWordSet(num);
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * 該当するワードセットを削除し、最新のリストをファイルに書き込む。
+     * @param num 削除したいワードセットのリスト上の位置。
+     */
+    private void deleteWordSet(int num){
+        Gson gson = new Gson();
+        SituationData print = situationDataList.get(num);
+        situationDataList.remove(num);
+
+        try {
+            FileWriter file = new FileWriter("./Data.json5");
+            PrintWriter writer = new PrintWriter(new BufferedWriter(file));
+
+            writer.print(gson.toJson(situationDataList));
+            writer.close();
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        System.out.println("削除しました。> " + print.getWho() + "は " + print.getWhere() + "で " + print.getDoSomething());
+    }
+
 
     /**
      * Jsonファイルを渡して読み込み、シチュエーションリストに格納する。
      *
-     * @param jsonFile
+     * @param jsonFile 読み込むJsonファイル
      */
     public void loadJsonFile(File jsonFile) {
         //リストをクリア
@@ -124,7 +175,6 @@ public class RandomPicker {
             SituationData[] data = new Gson().fromJson(reader, SituationData[].class);
             //situationDataListへ、一つずつdataを代入。
             situationDataList.addAll(Arrays.asList(data).subList(0, data.length));
-            System.out.println("シチュリストのサイズ : "+situationDataList.size());
 
         } catch (IOException e) {
             e.printStackTrace();
@@ -135,7 +185,7 @@ public class RandomPicker {
     /**
      * リストからwho, where, doSomethingを一つ一つ抽選し、組み合わせて返す。
      *
-     * @param list
+     * @param list situationList
      * @return リストからランダムに抽出した単語を組み合わせた文章。
      */
     public String randomPickUp(List<SituationData> list) {
@@ -173,13 +223,11 @@ public class RandomPicker {
     /**
      * Jsonに含まれているコンテンツをすべて表示する。
      *
-     * @param list
      */
-    private void getContentsAll(List<SituationData> list) {
-        for (int i = 0; i < list.size(); i++) {
-            SituationData data = list.get(i);
-            System.out.println("・" + data.getWho() + "は" + data.getWhere() + "で" + data.getDoSomething());
+    private void getContentsAll() {
+        for (int i = 0; i < situationDataList.size(); i++) {
+            SituationData data = situationDataList.get(i);
+            System.out.println("[" + i + "]" + data.getWho() + "は " + data.getWhere() + "で " + data.getDoSomething());
         }
     }
-
 }
