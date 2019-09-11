@@ -1,6 +1,4 @@
 import com.google.gson.Gson;
-import com.google.gson.JsonObject;
-import com.google.gson.reflect.TypeToken;
 
 import java.io.*;
 import java.util.ArrayList;
@@ -46,6 +44,9 @@ public class RandomPicker {
 
                 if (command.equals("q")){
                     break;
+                }
+                if (command.equals("license")){
+
                 }
             } catch (IOException e) {
                 e.printStackTrace();
@@ -100,7 +101,7 @@ public class RandomPicker {
                 break;
             }
         }
-        String res = who + "は " + where + "で " + doSomething;
+        String res = who + "は " + where + "で " + doSomething + "\n";
 
         return res;
     }
