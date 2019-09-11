@@ -1,0 +1,17 @@
+[
+  {
+    "who": "太郎",
+    "where": "東京",
+    "doSomething": "肉を食べた。"
+  },
+  {
+    "who": "花子",
+    "where": "神奈川",
+    "doSomething": "魚を釣った。"
+  },
+  {
+    "who": "次郎",
+    "where": "北海道",
+    "doSomething": "捕まった。"
+  }
+]
