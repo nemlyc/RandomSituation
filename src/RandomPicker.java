@@ -1,3 +1,18 @@
+/*!
+Json5
+
+Copyright (c) 2012-2018 Aseem Kishore, and others.
+
+Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+ */
+/*!
+This software includes the work that is distributed in the Apache License 2.0
+ */
+
 import com.google.gson.Gson;
 
 import java.io.*;
@@ -35,16 +50,11 @@ public class RandomPicker {
                         picker.deleteCommand();
                         break;
                 }
-
-
                 if (command.equals("q")) {
                     break;
                 }
                 if (command.equals("show")) {
                     picker.getContentsAll();
-                }
-                if (command.equals("license")) {
-
                 }
             } catch (IOException e) {
                 e.printStackTrace();
@@ -161,7 +171,6 @@ public class RandomPicker {
         System.out.println("削除しました。> " + print.getWho() + "は " + print.getWhere() + "で " + print.getDoSomething());
     }
 
-
     /**
      * Jsonファイルを渡して読み込み、シチュエーションリストに格納する。
      *
@@ -180,7 +189,6 @@ public class RandomPicker {
             e.printStackTrace();
         }
     }
-
 
     /**
      * リストからwho, where, doSomethingを一つ一つ抽選し、組み合わせて返す。
@@ -210,7 +218,7 @@ public class RandomPicker {
                 doSomething = list.get(selectedNum).getDoSomething();
                 continue;
             }
-            if (who != null && where != null && doSomething != null) {
+            if (who == null && where == null && doSomething == null) {
                 break;
             }
         }
@@ -218,7 +226,6 @@ public class RandomPicker {
 
         return res;
     }
-
 
     /**
      * Jsonに含まれているコンテンツをすべて表示する。
