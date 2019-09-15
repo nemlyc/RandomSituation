@@ -16,6 +16,7 @@ This software includes the work that is distributed in the Apache License 2.0
 import com.google.gson.Gson;
 
 import java.io.*;
+import java.nio.charset.StandardCharsets;
 import java.util.*;
 
 public class RandomPicker {
@@ -120,8 +121,8 @@ public class RandomPicker {
         situationDataList.add(data);
 
         try {
-            FileWriter file = new FileWriter("./Data.json5");
-            PrintWriter writer = new PrintWriter(new BufferedWriter(file));
+            File file = new File("./Data.json5");
+            PrintWriter writer = new PrintWriter(new BufferedWriter(new OutputStreamWriter(new FileOutputStream(file),StandardCharsets.UTF_8)));
 
             writer.print(gson.toJson(situationDataList));
             writer.close();
@@ -129,6 +130,8 @@ public class RandomPicker {
         } catch (IOException e) {
             e.printStackTrace();
         }
+        System.out.println("登録しました。> " + data.getWho() + "は " + data.getWhere() + "で " + data.getDoSomething());
+
     }
 
     /**
@@ -180,7 +183,7 @@ public class RandomPicker {
         //リストをクリア
         situationDataList.clear();
         try {
-            BufferedReader reader = new BufferedReader(new FileReader(jsonFile));
+            BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(jsonFile), StandardCharsets.UTF_8));
             SituationData[] data = new Gson().fromJson(reader, SituationData[].class);
             //situationDataListへ、一つずつdataを代入。
             situationDataList.addAll(Arrays.asList(data).subList(0, data.length));
@@ -218,7 +221,8 @@ public class RandomPicker {
                 doSomething = list.get(selectedNum).getDoSomething();
                 continue;
             }
-            if (who == null && where == null && doSomething == null) {
+            //すべてnull出なければbreak
+            if (who != null && where != null && doSomething != null) {
                 break;
             }
         }
